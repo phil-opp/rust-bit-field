@@ -5,6 +5,10 @@ use core::ops::Range;
 pub struct BitField(u32);
 
 impl BitField {
+    pub fn new(value: u32) -> BitField {
+        BitField(value)
+    }
+
     pub fn get_bit(&self, bit: u32) -> bool {
         assert!(bit < 32);
         self.get_range(bit..(bit+1)) == 1
