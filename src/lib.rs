@@ -2,6 +2,7 @@
 
 use core::ops::Range;
 
+#[derive(Debug, Clone, Copy)]
 pub struct BitField(u32);
 
 impl BitField {
