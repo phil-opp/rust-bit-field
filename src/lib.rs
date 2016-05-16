@@ -1,4 +1,5 @@
 #![feature(zero_one)]
+#![feature(const_fn)]
 #![no_std]
 
 #[cfg(test)]
@@ -12,7 +13,7 @@ pub struct BitField<T: Number>(T);
 impl<T> BitField<T>
     where T: Number
 {
-    pub fn new(value: T) -> BitField<T> {
+    pub const fn new(value: T) -> BitField<T> {
         BitField(value)
     }
 
