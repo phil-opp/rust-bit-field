@@ -48,12 +48,13 @@ impl<T> BitField<T>
         assert!(range.start < self.length());
         assert!(range.end <= self.length());
         assert!(range.start < range.end);
-        assert!(value << (self.length() - (range.end - range.start)) >> (self.length() - (range.end - range.start)) ==
-                value,
+        assert!(value << (self.length() - (range.end - range.start)) >>
+                (self.length() - (range.end - range.start)) == value,
                 "value too big");
 
-        let bitmask: T = !(!T::zero() << (self.length() - range.end) >> (self.length() - range.end) >> range.start <<
-                           range.start);
+        let bitmask: T = !(!T::zero() << (self.length() - range.end) >>
+                           (self.length() - range.end) >>
+                           range.start << range.start);
 
         let bits = self.0 & bitmask;
         // set bits
