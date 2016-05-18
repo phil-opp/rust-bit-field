@@ -17,12 +17,18 @@ impl<T> BitField<T>
         BitField(value)
     }
 
-    pub fn get_bit(&self, bit: usize) -> bool {
+    pub fn get_bit<N>(&self, bit: N) -> bool where N: Into<u8> + Ord {
+        let bit = bit.into();
         assert!(bit < self.length());
         self.get_range(bit..(bit + 1)) == T::one()
     }
 
-    pub fn get_range(&self, range: Range<usize>) -> T {
+    pub fn get_range<N>(&self, range: Range<N>) -> T where N: Into<u8> + Ord {
+        let range = Range {
+            start: range.start.into(),
+            end: range.end.into(),
+        };
+        
         assert!(range.start < self.length());
         assert!(range.end <= self.length());
         assert!(range.start < range.end);
@@ -34,17 +40,24 @@ impl<T> BitField<T>
         bits >> range.start
     }
 
-    pub fn set_bit(&mut self, bit: usize) {
+    pub fn set_bit<N>(&mut self, bit: N) where N: Into<u8> + Ord {
+        let bit = bit.into();
         assert!(bit < self.length());
         self.0 |= T::one() << bit;
     }
 
-    pub fn reset_bit(&mut self, bit: usize) {
+    pub fn reset_bit<N>(&mut self, bit: N) where N: Into<u8> + Ord {
+        let bit = bit.into();
         assert!(bit < self.length());
         self.0 &= !(T::one() << bit);
     }
 
-    pub fn set_range(&mut self, range: Range<usize>, value: T) {
+    pub fn set_range<N>(&mut self, range: Range<N>, value: T) where N: Into<u8> + Ord {
+        let range = Range {
+            start: range.start.into(),
+            end: range.end.into(),
+        };
+        
         assert!(range.start < self.length());
         assert!(range.end <= self.length());
         assert!(range.start < range.end);
@@ -60,17 +73,18 @@ impl<T> BitField<T>
         self.0 = bits | (value << range.start);
     }
 
-    fn length(&self) -> usize {
-        size_of::<T>() * 8
+    fn length(&self) -> u8 {
+        size_of::<T>() as u8 * 8
     }
 }
 
 use core::ops::{Range, Shl, Shr, BitAnd, BitOr, BitOrAssign, BitAndAssign, Not};
 use core::num::{Zero, One};
 use core::fmt::Debug;
+use core::cmp::Ord;
 
-pub trait Number: Debug + Copy + Eq + Zero + One +
-    Not<Output=Self> + Shl<usize, Output=Self> + Shr<usize, Output=Self> +
+pub trait Number: Debug + Copy + Eq + Zero + One + Ord + 
+    Not<Output=Self> + Shl<u8, Output=Self> + Shr<u8, Output=Self> +
     BitAnd<Self, Output=Self> + BitOr<Self, Output=Self>  + BitAndAssign + BitOrAssign {}
 
 impl Number for u8 {}
