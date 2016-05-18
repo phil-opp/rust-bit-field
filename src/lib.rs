@@ -17,12 +17,12 @@ impl<T> BitField<T>
         BitField(value)
     }
 
-    pub fn get_bit(&self, bit: usize) -> bool {
+    pub fn get_bit(&self, bit: u8) -> bool {
         assert!(bit < self.length());
         self.get_range(bit..(bit + 1)) == T::one()
     }
 
-    pub fn get_range(&self, range: Range<usize>) -> T {
+    pub fn get_range(&self, range: Range<u8>) -> T {
         assert!(range.start < self.length());
         assert!(range.end <= self.length());
         assert!(range.start < range.end);
@@ -34,17 +34,17 @@ impl<T> BitField<T>
         bits >> range.start
     }
 
-    pub fn set_bit(&mut self, bit: usize) {
+    pub fn set_bit(&mut self, bit: u8) {
         assert!(bit < self.length());
         self.0 |= T::one() << bit;
     }
 
-    pub fn reset_bit(&mut self, bit: usize) {
+    pub fn reset_bit(&mut self, bit: u8) {
         assert!(bit < self.length());
         self.0 &= !(T::one() << bit);
     }
 
-    pub fn set_range(&mut self, range: Range<usize>, value: T) {
+    pub fn set_range(&mut self, range: Range<u8>, value: T) {
         assert!(range.start < self.length());
         assert!(range.end <= self.length());
         assert!(range.start < range.end);
@@ -60,7 +60,7 @@ impl<T> BitField<T>
         self.0 = bits | (value << range.start);
     }
 
-    fn length(&self) -> usize {
+    fn length(&self) -> u8 {
         size_of::<T>() * 8
     }
 }
@@ -70,7 +70,7 @@ use core::num::{Zero, One};
 use core::fmt::Debug;
 
 pub trait Number: Debug + Copy + Eq + Zero + One +
-    Not<Output=Self> + Shl<usize, Output=Self> + Shr<usize, Output=Self> +
+    Not<Output=Self> + Shl<u8, Output=Self> + Shr<u8, Output=Self> +
     BitAnd<Self, Output=Self> + BitOr<Self, Output=Self>  + BitAndAssign + BitOrAssign {}
 
 impl Number for u8 {}
