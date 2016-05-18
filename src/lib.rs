@@ -62,7 +62,7 @@ impl<T> BitField<T>
     }
 
     fn length(&self) -> u8 {
-        size_of::<T>() * 8
+        size_of::<T>() as u8 * 8
     }
 }
 
