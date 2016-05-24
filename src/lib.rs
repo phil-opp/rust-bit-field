@@ -34,16 +34,17 @@ impl<T> BitField<T>
         bits >> range.start
     }
 
-    pub fn set_bit(&mut self, bit: u8, value: bool) {
+    pub fn set_bit(&mut self, bit: u8, value: bool) -> Self {
         assert!(bit < self.length());
         if value {
             self.0 |= T::one() << bit;
         } else {
             self.0 &= !(T::one() << bit);
         }
+        *self
     }
 
-    pub fn set_range(&mut self, range: Range<u8>, value: T) {
+    pub fn set_range(&mut self, range: Range<u8>, value: T) -> Self {
         assert!(range.start < self.length());
         assert!(range.end <= self.length());
         assert!(range.start < range.end);
@@ -58,6 +59,8 @@ impl<T> BitField<T>
         let bits = self.0 & bitmask;
         // set bits
         self.0 = bits | (value << range.start);
+
+        *self
     }
 
     fn length(&self) -> u8 {
