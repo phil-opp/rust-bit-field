@@ -4,11 +4,11 @@ use BitField;
 fn test_set_reset_u8() {
     let mut field = BitField(0b11110010u8);
     let mut bit_i = |i| {
-        field.set_bit(i);
+        field.set_bit(i, true);
         assert_eq!(field.get_bit(i), true);
-        field.reset_bit(i);
+        field.set_bit(i, false);
         assert_eq!(field.get_bit(i), false);
-        field.set_bit(i);
+        field.set_bit(i, true);
         assert_eq!(field.get_bit(i), true);
     };
     for i in 0..8 {
@@ -20,11 +20,11 @@ fn test_set_reset_u8() {
 fn test_set_reset_u16() {
     let mut field = BitField(0b1111001010010110u16);
     let mut bit_i = |i| {
-        field.set_bit(i);
+        field.set_bit(i, true);
         assert_eq!(field.get_bit(i), true);
-        field.reset_bit(i);
+        field.set_bit(i, false);
         assert_eq!(field.get_bit(i), false);
-        field.set_bit(i);
+        field.set_bit(i, true);
         assert_eq!(field.get_bit(i), true);
     };
     for i in 0..16 {
@@ -59,11 +59,11 @@ fn test_read_u32() {
 fn test_set_reset_u32() {
     let mut field = BitField(0b1111111111010110u32);
     let mut bit_i = |i| {
-        field.set_bit(i);
+        field.set_bit(i, true);
         assert_eq!(field.get_bit(i), true);
-        field.reset_bit(i);
+        field.set_bit(i, false);
         assert_eq!(field.get_bit(i), false);
-        field.set_bit(i);
+        field.set_bit(i, true);
         assert_eq!(field.get_bit(i), true);
     };
     for i in 0..32 {
@@ -120,11 +120,11 @@ fn test_read_u64() {
 fn test_set_reset_u64() {
     let mut field = BitField(0b1111111111010110u64 << 32);
     let mut bit_i = |i| {
-        field.set_bit(i);
+        field.set_bit(i, true);
         assert_eq!(field.get_bit(i), true);
-        field.reset_bit(i);
+        field.set_bit(i, false);
         assert_eq!(field.get_bit(i), false);
-        field.set_bit(i);
+        field.set_bit(i, true);
         assert_eq!(field.get_bit(i), true);
     };
     for i in 0..64 {
