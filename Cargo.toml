@@ -7,6 +7,6 @@ license = "Apache-2.0/MIT"
 description = "Simple bit field implementation providing get_bit, get_range, set_bit, and set_range methods for unsigned integers."
 keywords = ["no_std"]
 repository = "https://github.com/phil-opp/rust-bit-field"
-documentation = "https://crates.fyi/crates/bit_field/0.1.0/"
+documentation = "https://crates.fyi/crates/bit_field/0.2.1/"
 
 [dependencies]
