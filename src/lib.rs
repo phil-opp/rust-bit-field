@@ -17,6 +17,10 @@ impl<T> BitField<T>
         BitField(value)
     }
 
+    pub fn bits(&self) -> T {
+        self.0
+    }
+
     pub fn get_bit(&self, bit: u8) -> bool {
         assert!(bit < self.length());
         self.get_range(bit..(bit + 1)) == T::one()
