@@ -1,4 +1,3 @@
-#![feature(zero_one)]
 #![feature(const_fn)]
 #![no_std]
 
@@ -73,15 +72,23 @@ impl<T> BitField<T>
 }
 
 use core::ops::{Range, Shl, Shr, BitAnd, BitOr, BitOrAssign, BitAndAssign, Not};
-use core::num::{Zero, One};
 use core::fmt::Debug;
 
-pub trait Number: Debug + Copy + Eq + Zero + One +
+pub trait Number: Debug + Copy + Eq +
     Not<Output=Self> + Shl<u8, Output=Self> + Shr<u8, Output=Self> +
-    BitAnd<Self, Output=Self> + BitOr<Self, Output=Self>  + BitAndAssign + BitOrAssign {}
+    BitAnd<Self, Output=Self> + BitOr<Self, Output=Self>  + BitAndAssign + BitOrAssign {
 
-impl Number for u8 {}
-impl Number for u16 {}
-impl Number for u32 {}
-impl Number for u64 {}
-impl Number for usize {}
+    fn zero() -> Self;
+    fn one() -> Self;
+}
+
+macro_rules! number_impl {
+    ($($t:ty)*) => ($(
+        impl Number for $t {
+            fn zero() -> Self { 0 }
+            fn one() -> Self { 1 }
+        }
+    )*)
+}
+
+number_impl! { u8 u16 u32 u64 usize }
