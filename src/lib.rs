@@ -1,4 +1,3 @@
-#![feature(const_fn)]
 #![no_std]
 
 #[cfg(test)]
