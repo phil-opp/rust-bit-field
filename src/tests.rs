@@ -1,6 +1,19 @@
 use BitField;
 
 #[test]
+fn test_integer_bit_lengths() {
+    assert_eq!(0u8.bit_length(), 8);
+    assert_eq!(0u16.bit_length(), 16);
+    assert_eq!(0u32.bit_length(), 32);
+    assert_eq!(0u64.bit_length(), 64);
+
+    assert_eq!(0i8.bit_length(), 8);
+    assert_eq!(0i16.bit_length(), 16);
+    assert_eq!(0i32.bit_length(), 32);
+    assert_eq!(0i64.bit_length(), 64);
+}
+
+#[test]
 fn test_set_reset_u8() {
     let mut field = 0b11110010u8;
     let mut bit_i = |i| {
@@ -48,11 +61,11 @@ fn test_read_u32() {
         assert_eq!(field.get_bit(i), false);
     }
 
-    assert_eq!(field.get_range(16..32), 0);
-    assert_eq!(field.get_range(6..16), 0b1111111111);
-    assert_eq!(field.get_range(0..6), 0b010110);
-    assert_eq!(field.get_range(0..10), 0b1111010110);
-    assert_eq!(field.get_range(5..12), 0b1111110);
+    assert_eq!(field.get_bits(16..32), 0);
+    assert_eq!(field.get_bits(6..16), 0b1111111111);
+    assert_eq!(field.get_bits(0..6), 0b010110);
+    assert_eq!(field.get_bits(0..10), 0b1111010110);
+    assert_eq!(field.get_bits(5..12), 0b1111110);
 }
 
 #[test]
@@ -74,19 +87,19 @@ fn test_set_reset_u32() {
 #[test]
 fn test_set_range_u32() {
     let mut field = 0b1111111111010110u32;
-    field.set_range(10..15, 0b00000);
-    assert_eq!(field.get_range(10..15), 0b00000);
-    field.set_range(10..15, 0b10101);
-    assert_eq!(field.get_range(10..15), 0b10101);
-    field.set_range(10..15, 0b01010);
-    assert_eq!(field.get_range(10..15), 0b01010);
-    field.set_range(10..15, 0b11111);
-    assert_eq!(field.get_range(10..15), 0b11111);
+    field.set_bits(10..15, 0b00000);
+    assert_eq!(field.get_bits(10..15), 0b00000);
+    field.set_bits(10..15, 0b10101);
+    assert_eq!(field.get_bits(10..15), 0b10101);
+    field.set_bits(10..15, 0b01010);
+    assert_eq!(field.get_bits(10..15), 0b01010);
+    field.set_bits(10..15, 0b11111);
+    assert_eq!(field.get_bits(10..15), 0b11111);
 
-    field.set_range(0..16, 0xdead);
-    field.set_range(14..32, 0xbeaf);
-    assert_eq!(field.get_range(0..16), 0xdead);
-    assert_eq!(field.get_range(14..32), 0xbeaf);
+    field.set_bits(0..16, 0xdead);
+    field.set_bits(14..32, 0xbeaf);
+    assert_eq!(field.get_bits(0..16), 0xdead);
+    assert_eq!(field.get_bits(14..32), 0xbeaf);
 }
 
 #[test]
@@ -108,12 +121,12 @@ fn test_read_u64() {
         assert_eq!(field.get_bit(i), false);
     }
 
-    assert_eq!(field.get_range(0..32), 0);
-    assert_eq!(field.get_range(48..64), 0);
-    assert_eq!(field.get_range(38..48), 0b1111111111);
-    assert_eq!(field.get_range(32..38), 0b010110);
-    assert_eq!(field.get_range(32..42), 0b1111010110);
-    assert_eq!(field.get_range(37..44), 0b1111110);
+    assert_eq!(field.get_bits(0..32), 0);
+    assert_eq!(field.get_bits(48..64), 0);
+    assert_eq!(field.get_bits(38..48), 0b1111111111);
+    assert_eq!(field.get_bits(32..38), 0b010110);
+    assert_eq!(field.get_bits(32..42), 0b1111010110);
+    assert_eq!(field.get_bits(37..44), 0b1111110);
 }
 
 #[test]
@@ -135,19 +148,19 @@ fn test_set_reset_u64() {
 #[test]
 fn test_set_range_u64() {
     let mut field = 0b1111111111010110u64 << 32;
-    field.set_range(42..47, 0b00000);
-    assert_eq!(field.get_range(42..47), 0b00000);
-    field.set_range(10..15, 0b10101);
-    assert_eq!(field.get_range(10..15), 0b10101);
-    field.set_range(40..45, 0b01010);
-    assert_eq!(field.get_range(40..45), 0b01010);
-    field.set_range(40..45, 0b11111);
-    assert_eq!(field.get_range(40..45), 0b11111);
+    field.set_bits(42..47, 0b00000);
+    assert_eq!(field.get_bits(42..47), 0b00000);
+    field.set_bits(10..15, 0b10101);
+    assert_eq!(field.get_bits(10..15), 0b10101);
+    field.set_bits(40..45, 0b01010);
+    assert_eq!(field.get_bits(40..45), 0b01010);
+    field.set_bits(40..45, 0b11111);
+    assert_eq!(field.get_bits(40..45), 0b11111);
 
-    field.set_range(0..16, 0xdead);
-    field.set_range(14..32, 0xbeaf);
-    field.set_range(32..64, 0xcafebabe);
-    assert_eq!(field.get_range(0..16), 0xdead);
-    assert_eq!(field.get_range(14..32), 0xbeaf);
-    assert_eq!(field.get_range(32..64), 0xcafebabe);
+    field.set_bits(0..16, 0xdead);
+    field.set_bits(14..32, 0xbeaf);
+    field.set_bits(32..64, 0xcafebabe);
+    assert_eq!(field.get_bits(0..16), 0xdead);
+    assert_eq!(field.get_bits(14..32), 0xbeaf);
+    assert_eq!(field.get_bits(32..64), 0xcafebabe);
 }
