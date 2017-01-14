@@ -4,7 +4,7 @@ version = "0.6.1"
 authors = ["Philipp Oppermann <dev@phil-opp.com>"]
 license = "Apache-2.0/MIT"
 
-description = "Simple bit field trait providing get_bit, get_range, set_bit, and set_range methods for unsigned integers."
+description = "Simple bit field trait providing get_bit, get_bits, set_bit, and set_bits methods for Rust's integral types."
 keywords = ["no_std"]
 repository = "https://github.com/phil-opp/rust-bit-field"
 documentation = "https://docs.rs/bit_field"
