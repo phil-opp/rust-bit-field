@@ -148,7 +148,7 @@ macro_rules! bitfield_numeric_impl {
                 assert!(range.start < range.end);
                 assert!(value << (self.bit_length() - (range.end - range.start)) >>
                         (self.bit_length() - (range.end - range.start)) == value,
-                        "The provided value when setting a range of bits had zeros outside of the size of the range!");
+                        "value does not fit into bit range");
 
                 let bitmask: Self = !(!0 << (self.bit_length() - range.end) >>
                                     (self.bit_length() - range.end) >>
