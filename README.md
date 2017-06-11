@@ -17,14 +17,14 @@ bit_field = "0.7.0"
 extern crate bit_field;
 use bit_field::BitField;
 
-let x: u8 = 0;
+let mut x: u8 = 0;
 let msb = x.bit_length() - 1;
 
 x.set_bit(msb, true);
-assert_eq!(x, 0b1000_000)
+assert_eq!(x, 0b1000_0000);
 
 x.set_bits(0..4, 0b1001);
-assert_eq!(x, 0b1000_1001)
+assert_eq!(x, 0b1000_1001);
 
 ```
 
