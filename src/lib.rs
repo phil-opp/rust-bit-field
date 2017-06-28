@@ -105,7 +105,7 @@ pub trait BitField {
 }
 
 
-pub trait BitVector<T: BitField> {
+pub trait BitArray<T: BitField> {
     fn bit_length(&self) -> usize;
 
     fn get_bit(&self, bit: usize) -> bool;
@@ -179,7 +179,7 @@ macro_rules! bitfield_numeric_impl {
 
 bitfield_numeric_impl! { u8 u16 u32 u64 usize i8 i16 i32 i64 isize }
 
-impl<T: BitField> BitVector<T> for [T] {
+impl<T: BitField> BitArray<T> for [T] {
     fn bit_length(&self) -> usize {
         self.len() * (T::bit_length() as usize)
     }
