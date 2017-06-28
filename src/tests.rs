@@ -2,15 +2,15 @@ use BitField;
 
 #[test]
 fn test_integer_bit_lengths() {
-    assert_eq!(0u8.bit_length(), 8);
-    assert_eq!(0u16.bit_length(), 16);
-    assert_eq!(0u32.bit_length(), 32);
-    assert_eq!(0u64.bit_length(), 64);
+    assert_eq!(u8::bit_length(), 8);
+    assert_eq!(u16::bit_length(), 16);
+    assert_eq!(u32::bit_length(), 32);
+    assert_eq!(u64::bit_length(), 64);
 
-    assert_eq!(0i8.bit_length(), 8);
-    assert_eq!(0i16.bit_length(), 16);
-    assert_eq!(0i32.bit_length(), 32);
-    assert_eq!(0i64.bit_length(), 64);
+    assert_eq!(i8::bit_length(), 8);
+    assert_eq!(i16::bit_length(), 16);
+    assert_eq!(i32::bit_length(), 32);
+    assert_eq!(i64::bit_length(), 64);
 }
 
 #[test]

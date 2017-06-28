@@ -17,10 +17,10 @@ pub trait BitField {
     /// ```rust
     /// use bit_field::BitField;
     ///
-    /// assert_eq!(0u32.bit_length(), 32);
-    /// assert_eq!(0u64.bit_length(), 64);
+    /// assert_eq!(u32::bit_length(), 32);
+    /// assert_eq!(u64::bit_length(), 64);
     /// ```
-    fn bit_length(&self) -> u8;
+    fn bit_length() -> u8;
 
     /// Obtains the bit at the index `bit`; note that index 0 is the least significant bit, while
     /// index `length() - 1` is the most significant bit.
@@ -108,30 +108,30 @@ pub trait BitField {
 macro_rules! bitfield_numeric_impl {
     ($($t:ty)*) => ($(
         impl BitField for $t {
-            fn bit_length(&self) -> u8 {
+            fn bit_length() -> u8 {
                 ::core::mem::size_of::<Self>() as u8 * 8
             }
 
             fn get_bit(&self, bit: u8) -> bool {
-                assert!(bit < self.bit_length());
+                assert!(bit < Self::bit_length());
 
                 (*self & (1 << bit)) != 0
             }
 
             fn get_bits(&self, range: Range<u8>) -> Self {
-                assert!(range.start < self.bit_length());
-                assert!(range.end <= self.bit_length());
+                assert!(range.start < Self::bit_length());
+                assert!(range.end <= Self::bit_length());
                 assert!(range.start < range.end);
 
                 // shift away high bits
-                let bits = *self << (self.bit_length() - range.end) >> (self.bit_length() - range.end);
+                let bits = *self << (Self::bit_length() - range.end) >> (Self::bit_length() - range.end);
 
                 // shift away low bits
                 bits >> range.start
             }
 
             fn set_bit(&mut self, bit: u8, value: bool) -> &mut Self {
-                assert!(bit < self.bit_length());
+                assert!(bit < Self::bit_length());
 
                 if value {
                     *self |= 1 << bit;
@@ -143,15 +143,15 @@ macro_rules! bitfield_numeric_impl {
             }
 
             fn set_bits(&mut self, range: Range<u8>, value: Self) -> &mut Self {
-                assert!(range.start < self.bit_length());
-                assert!(range.end <= self.bit_length());
+                assert!(range.start < Self::bit_length());
+                assert!(range.end <= Self::bit_length());
                 assert!(range.start < range.end);
-                assert!(value << (self.bit_length() - (range.end - range.start)) >>
-                        (self.bit_length() - (range.end - range.start)) == value,
+                assert!(value << (Self::bit_length() - (range.end - range.start)) >>
+                        (Self::bit_length() - (range.end - range.start)) == value,
                         "value does not fit into bit range");
 
-                let bitmask: Self = !(!0 << (self.bit_length() - range.end) >>
-                                    (self.bit_length() - range.end) >>
+                let bitmask: Self = !(!0 << (Self::bit_length() - range.end) >>
+                                    (Self::bit_length() - range.end) >>
                                     range.start << range.start);
 
                 // set bits
