@@ -104,6 +104,20 @@ pub trait BitField {
     fn set_bits(&mut self, range: Range<u8>, value: Self) -> &mut Self;
 }
 
+
+pub trait BitVector<T: BitField> {
+    fn bit_length(&self) -> usize;
+
+    fn get_bit(&self, bit: usize) -> bool;
+
+    fn get_bits(&self, range: Range<usize>) -> T;
+
+    fn set_bit(&mut self, bit: usize, value: bool);
+
+    fn set_bits(&mut self, range: Range<usize>, value: T);
+}
+
+
 /// An internal macro used for implementing BitField on the standard integral types.
 macro_rules! bitfield_numeric_impl {
     ($($t:ty)*) => ($(
