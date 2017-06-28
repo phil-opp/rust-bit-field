@@ -178,3 +178,63 @@ macro_rules! bitfield_numeric_impl {
 }
 
 bitfield_numeric_impl! { u8 u16 u32 u64 usize i8 i16 i32 i64 isize }
+
+impl<T: BitField> BitVector<T> for [T] {
+    fn bit_length(&self) -> usize {
+        self.len() * (T::bit_length() as usize)
+    }
+
+    fn get_bit(&self, bit: usize) -> bool {
+        let slice_index = bit / T::bit_length() as usize;
+        let bit_index = (bit % T::bit_length() as usize) as u8;
+        self[slice_index].get_bit(bit_index)
+    }
+
+    fn get_bits(&self, range: Range<usize>) -> T {
+        assert!(range.len() <= T::bit_length() as usize);
+
+        let slice_start = range.start/T::bit_length() as usize;
+        let slice_end = range.end / T::bit_length() as usize;
+        let bit_start = (range.start % T::bit_length() as usize) as u8;
+        let bit_end = (range.end % T::bit_length() as usize) as u8;
+
+        if slice_start == slice_end {
+            self[slice_start].get_bits(bit_start..bit_end)
+        } else if bit_end == 0 {
+            self[slice_start].get_bits(bit_start..T::bit_length())
+        } else {
+            self[slice_start]
+                .get_bits(bit_start..T::bit_length())
+                .get_bits(0..bit_end)
+        }
+    }
+
+    fn set_bit(&mut self, bit: usize, value: bool) {
+        let slice_index = bit / T::bit_length() as usize;
+        let bit_index = (bit % T::bit_length() as usize) as u8;
+        self[slice_index].set_bit(bit_index, value);
+    }
+
+    fn set_bits(&mut self, range: Range<usize>, value: T) {
+        assert!(range.len() <= T::bit_length() as usize);
+
+        let slice_start = range.start/T::bit_length() as usize;
+        let slice_end = range.end / T::bit_length() as usize;
+        let bit_start = (range.start % T::bit_length() as usize) as u8;
+        let bit_end = (range.end % T::bit_length() as usize) as u8;
+
+        if slice_start == slice_end {
+            self[slice_start].set_bits(bit_start..bit_end, value);
+        } else if bit_end == 0 {
+            self[slice_start].set_bits(bit_start..T::bit_length(), value);
+        } else {
+            self[slice_start]
+                .set_bits(bit_start..T::bit_length(), value.get_bits(0..T::bit_length()-bit_start))
+                .set_bits(0..bit_end, value.get_bits(T::bit_length()-bit_start..T::bit_length()));
+        }
+        
+    }
+
+    
+}
+
