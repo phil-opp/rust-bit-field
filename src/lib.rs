@@ -198,6 +198,8 @@ impl<T: BitField> BitArray<T> for [T] {
         let bit_start = (range.start % T::bit_length() as usize) as u8;
         let bit_end = (range.end % T::bit_length() as usize) as u8;
         let len = range.len() as u8;
+
+        assert!(slice_end - slice_start<= 1);
         
         if slice_start == slice_end {
             self[slice_start].get_bits(bit_start..bit_end)
@@ -223,6 +225,8 @@ impl<T: BitField> BitArray<T> for [T] {
         let slice_end = range.end / T::bit_length() as usize;
         let bit_start = (range.start % T::bit_length() as usize) as u8;
         let bit_end = (range.end % T::bit_length() as usize) as u8;
+        
+        assert!(slice_end - slice_start<= 1);
         
         if slice_start == slice_end {
             self[slice_start].set_bits(bit_start..bit_end, value);
