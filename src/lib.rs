@@ -192,20 +192,21 @@ impl<T: BitField> BitArray<T> for [T] {
 
     fn get_bits(&self, range: Range<usize>) -> T {
         assert!(range.len() <= T::bit_length() as usize);
-
+        
         let slice_start = range.start/T::bit_length() as usize;
         let slice_end = range.end / T::bit_length() as usize;
         let bit_start = (range.start % T::bit_length() as usize) as u8;
         let bit_end = (range.end % T::bit_length() as usize) as u8;
-
+        let len = range.len() as u8;
+        
         if slice_start == slice_end {
             self[slice_start].get_bits(bit_start..bit_end)
         } else if bit_end == 0 {
             self[slice_start].get_bits(bit_start..T::bit_length())
         } else {
-            self[slice_start]
-                .get_bits(bit_start..T::bit_length())
-                .get_bits(0..bit_end)
+            let mut ret = self[slice_start].get_bits(bit_start..T::bit_length());
+            ret.set_bits((T::bit_length() - bit_start)..len, self[slice_end].get_bits(0..bit_end));
+            ret
         }
     }
 
@@ -222,19 +223,16 @@ impl<T: BitField> BitArray<T> for [T] {
         let slice_end = range.end / T::bit_length() as usize;
         let bit_start = (range.start % T::bit_length() as usize) as u8;
         let bit_end = (range.end % T::bit_length() as usize) as u8;
-
+        
         if slice_start == slice_end {
             self[slice_start].set_bits(bit_start..bit_end, value);
         } else if bit_end == 0 {
             self[slice_start].set_bits(bit_start..T::bit_length(), value);
         } else {
-            self[slice_start]
-                .set_bits(bit_start..T::bit_length(), value.get_bits(0..T::bit_length()-bit_start))
-                .set_bits(0..bit_end, value.get_bits(T::bit_length()-bit_start..T::bit_length()));
+            self[slice_start].set_bits(bit_start..T::bit_length(), value.get_bits(0..T::bit_length()-bit_start));
+            self[slice_end].set_bits(0..bit_end, value.get_bits(T::bit_length()-bit_start..T::bit_length()));
         }
-        
     }
-
     
 }
 
