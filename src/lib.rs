@@ -106,14 +106,96 @@ pub trait BitField {
 
 
 pub trait BitArray<T: BitField> {
+    /// Returns the length, eg number of bits, in this bit array.
+    ///
+    /// ```rust
+    /// use bit_field::BitArray;
+    ///
+    /// assert_eq!([0u8, 4u8, 8u8].bit_length(), 24);
+    /// assert_eq!([0u32, 5u32].bit_length(), 64);
+    /// ```
     fn bit_length(&self) -> usize;
 
+    /// Obtains the bit at the index `bit`; note that index 0 is the least significant bit, while
+    /// index `length() - 1` is the most significant bit.
+    ///
+    /// ```rust
+    /// use bit_field::BitArray;
+    ///
+    /// let value: [u32; 1] = [0b110101];
+    ///
+    /// assert_eq!(value.get_bit(1), false);
+    /// assert_eq!(value.get_bit(2), true);
+    /// ```
+    ///
+    /// ## Panics
+    ///
+    /// This method will panic if the bit index is out of bounds of the bit array.
     fn get_bit(&self, bit: usize) -> bool;
 
+    /// Obtains the range of bits specified by `range`; note that index 0 is the least significant
+    /// bit, while index `length() - 1` is the most significant bit.
+    ///
+    /// ```rust
+    /// use bit_field::BitArray;
+    ///
+    /// let value: [u32; 2] = [0b110101, 0b11];
+    ///
+    /// assert_eq!(value.get_bits(0..3), 0b101);
+    /// assert_eq!(value.get_bits(31..33), 0b10);
+    /// ```
+    ///
+    /// ## Panics
+    ///
+    /// This method will panic if the start or end indexes of the range are out of bounds of the
+    /// bit array, or if the range can't be contained by the bit field T.
     fn get_bits(&self, range: Range<usize>) -> T;
 
+    /// Sets the bit at the index `bit` to the value `value` (where true means a value of '1' and
+    /// false means a value of '0'); note that index 0 is the least significant bit, while index
+    /// `length() - 1` is the most significant bit.
+    ///
+    /// ```rust
+    /// use bit_field::BitArray;
+    ///
+    /// let mut value = [0u32];
+    ///
+    /// value.set_bit(1, true);
+    /// assert_eq!(value, [2u32]);
+    ///
+    /// value.set_bit(3, true);
+    /// assert_eq!(value, [10u32]);
+    ///
+    /// value.set_bit(1, false);
+    /// assert_eq!(value, [8u32]);
+    /// ```
+    ///
+    /// ## Panics
+    ///
+    /// This method will panic if the bit index is out of the bounds of the bit array.
     fn set_bit(&mut self, bit: usize, value: bool);
 
+    /// Sets the range of bits defined by the range `range` to the lower bits of `value`; to be
+    /// specific, if the range is N bits long, the N lower bits of `value` will be used; if any of
+    /// the other bits in `value` are set to 1, this function will panic.
+    ///
+    /// ```rust
+    /// use bit_field::BitArray;
+    ///
+    /// let mut value = [0u32, 0u32];
+    ///
+    /// value.set_bits(0..2, 0b11);
+    /// assert_eq!(value, [0b11, 0u32]);
+    ///
+    /// value.set_bits(31..35, 0b1010);
+    /// assert_eq!(value, [0x0003, 0b101]);
+    /// ```
+    ///
+    /// ## Panics
+    ///
+    /// This method will panic if the range is out of bounds of the bit array,
+    /// if the range can't be contained by the bit field T, or if there are `1`s 
+    /// not in the lower N bits of `value`.
     fn set_bits(&mut self, range: Range<usize>, value: T);
 }
 
