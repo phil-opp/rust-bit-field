@@ -182,7 +182,7 @@ fn test_array_length() {
 }
 
 #[test]
-fn test_get_array() {
+fn test_set_bit_array() {
     let mut test_val = [0xffu8];
     &test_val.set_bit(0,false);
     assert_eq!(test_val, [0xfeu8]);
@@ -196,3 +196,73 @@ fn test_get_array() {
 
     assert_eq!(test_array, [0x7fu8, 0x01u8, 0xfeu8]);
 }
+
+#[test]
+fn test_get_bit_array() {
+    let test_val = [0xefu8];
+    assert_eq!(test_val.get_bit(1), true);
+    assert_eq!(test_val.get_bit(4), false);
+       
+    let test_array = [0xffu8, 0x00u8, 0xffu8];
+    assert_eq!(test_array.get_bit(7), true);
+    assert_eq!(test_array.get_bit(8), false);
+    assert_eq!(test_array.get_bit(16), true);
+}
+
+#[test]
+fn test_set_bits_array() {
+    let mut test_val = [0xffu8];
+
+    test_val.set_bits(0..4, 0x0u8);
+    assert_eq!(test_val, [0xf0u8]);
+    
+    test_val.set_bits(0..4,0xau8);
+    assert_eq!(test_val, [0xfau8]);
+
+    test_val.set_bits(4..8,0xau8);
+    assert_eq!(test_val, [0xaau8]);
+
+
+
+    let mut test_array = [0xffu8, 0x00u8, 0xffu8];
+
+    test_array.set_bits(7..9, 0b10);
+    assert_eq!(test_array, [0x7f, 0x01, 0xff]);
+
+    test_array.set_bits(12..20, 0xaa);
+    assert_eq!(test_array, [0x7f, 0xa1, 0xfa]);
+
+    test_array.set_bits(16..24, 0xaa);
+    assert_eq!(test_array, [0x7f, 0xa1, 0xaa]);
+
+    test_array.set_bits(6..14, 0x00);
+    assert_eq!(test_array, [0x3f, 0x80, 0xaa]);
+}
+
+
+#[test]
+fn test_get_bits_array() {
+    let mut test_val = [0xf0u8];
+    assert_eq!(test_val.get_bits(0..4), 0x0u8);
+    
+    test_val = [0xfau8];
+    assert_eq!(test_val.get_bits(0..4), 0xau8);
+
+    test_val = [0xaau8];
+    assert_eq!(test_val.get_bits(4..8), 0xau8);
+    
+
+    let mut test_array: [u8; 3] = [0xff, 0x01, 0xff];
+    assert_eq!(test_array.get_bits(7..9), 0b11u8);
+
+    test_array = [0x7f, 0xa1, 0xfa];
+    assert_eq!(test_array.get_bits(12..20), 0xaa);
+
+    test_array = [0x7f, 0xa1, 0xaa];
+    assert_eq!(test_array.get_bits(16..24), 0xaa);
+
+    test_array = [0x3f, 0x80, 0xaa];
+    assert_eq!(test_array.get_bits(6..14), 0x00);
+
+}
+
