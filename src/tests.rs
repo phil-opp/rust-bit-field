@@ -1,16 +1,17 @@
 use BitField;
+use BitArray;
 
 #[test]
 fn test_integer_bit_lengths() {
-    assert_eq!(0u8.bit_length(), 8);
-    assert_eq!(0u16.bit_length(), 16);
-    assert_eq!(0u32.bit_length(), 32);
-    assert_eq!(0u64.bit_length(), 64);
+    assert_eq!(u8::bit_length(), 8);
+    assert_eq!(u16::bit_length(), 16);
+    assert_eq!(u32::bit_length(), 32);
+    assert_eq!(u64::bit_length(), 64);
 
-    assert_eq!(0i8.bit_length(), 8);
-    assert_eq!(0i16.bit_length(), 16);
-    assert_eq!(0i32.bit_length(), 32);
-    assert_eq!(0i64.bit_length(), 64);
+    assert_eq!(i8::bit_length(), 8);
+    assert_eq!(i16::bit_length(), 16);
+    assert_eq!(i32::bit_length(), 32);
+    assert_eq!(i64::bit_length(), 64);
 }
 
 #[test]
@@ -164,3 +165,104 @@ fn test_set_range_u64() {
     assert_eq!(field.get_bits(14..32), 0xbeaf);
     assert_eq!(field.get_bits(32..64), 0xcafebabe);
 }
+
+#[test]
+fn test_array_length() {
+    assert_eq!((&[2u8, 3u8, 4u8]).bit_length(), 24);
+    assert_eq!((&[2i8, 3i8, 4i8, 5i8]).bit_length(), 32);
+
+    assert_eq!((&[2u16, 3u16, 4u16]).bit_length(), 48);
+    assert_eq!((&[2i16, 3i16, 4i16, 5i16]).bit_length(), 64);
+    
+    assert_eq!((&[2u32, 3u32, 4u32]).bit_length(), 96);
+    assert_eq!((&[2i32, 3i32, 4i32, 5i32]).bit_length(), 128);
+
+    assert_eq!((&[2u64, 3u64, 4u64]).bit_length(), 192);
+    assert_eq!((&[2i64, 3i64, 4i64, 5i64]).bit_length(), 256);
+}
+
+#[test]
+fn test_set_bit_array() {
+    let mut test_val = [0xffu8];
+    &test_val.set_bit(0,false);
+    assert_eq!(test_val, [0xfeu8]);
+    &test_val.set_bit(4,false);
+    assert_eq!(test_val, [0xeeu8]);
+
+    let mut test_array = [0xffu8, 0x00u8, 0xffu8];
+    &test_array.set_bit(7, false);
+    &test_array.set_bit(8, true);
+    &test_array.set_bit(16, false);
+
+    assert_eq!(test_array, [0x7fu8, 0x01u8, 0xfeu8]);
+}
+
+#[test]
+fn test_get_bit_array() {
+    let test_val = [0xefu8];
+    assert_eq!(test_val.get_bit(1), true);
+    assert_eq!(test_val.get_bit(4), false);
+       
+    let test_array = [0xffu8, 0x00u8, 0xffu8];
+    assert_eq!(test_array.get_bit(7), true);
+    assert_eq!(test_array.get_bit(8), false);
+    assert_eq!(test_array.get_bit(16), true);
+}
+
+#[test]
+fn test_set_bits_array() {
+    let mut test_val = [0xffu8];
+
+    test_val.set_bits(0..4, 0x0u8);
+    assert_eq!(test_val, [0xf0u8]);
+    
+    test_val.set_bits(0..4,0xau8);
+    assert_eq!(test_val, [0xfau8]);
+
+    test_val.set_bits(4..8,0xau8);
+    assert_eq!(test_val, [0xaau8]);
+
+
+
+    let mut test_array = [0xffu8, 0x00u8, 0xffu8];
+
+    test_array.set_bits(7..9, 0b10);
+    assert_eq!(test_array, [0x7f, 0x01, 0xff]);
+
+    test_array.set_bits(12..20, 0xaa);
+    assert_eq!(test_array, [0x7f, 0xa1, 0xfa]);
+
+    test_array.set_bits(16..24, 0xaa);
+    assert_eq!(test_array, [0x7f, 0xa1, 0xaa]);
+
+    test_array.set_bits(6..14, 0x00);
+    assert_eq!(test_array, [0x3f, 0x80, 0xaa]);
+}
+
+
+#[test]
+fn test_get_bits_array() {
+    let mut test_val = [0xf0u8];
+    assert_eq!(test_val.get_bits(0..4), 0x0u8);
+    
+    test_val = [0xfau8];
+    assert_eq!(test_val.get_bits(0..4), 0xau8);
+
+    test_val = [0xaau8];
+    assert_eq!(test_val.get_bits(4..8), 0xau8);
+    
+
+    let mut test_array: [u8; 3] = [0xff, 0x01, 0xff];
+    assert_eq!(test_array.get_bits(7..9), 0b11u8);
+
+    test_array = [0x7f, 0xa1, 0xfa];
+    assert_eq!(test_array.get_bits(12..20), 0xaa);
+
+    test_array = [0x7f, 0xa1, 0xaa];
+    assert_eq!(test_array.get_bits(16..24), 0xaa);
+
+    test_array = [0x3f, 0x80, 0xaa];
+    assert_eq!(test_array.get_bits(6..14), 0x00);
+
+}
+
