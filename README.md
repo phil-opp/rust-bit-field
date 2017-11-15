@@ -18,9 +18,8 @@ extern crate bit_field;
 use bit_field::BitField;
 
 let mut x: u8 = 0;
-let msb = x.bit_length() - 1;
 
-x.set_bit(msb, true);
+x.set_bit(7, true);
 assert_eq!(x, 0b1000_0000);
 
 x.set_bits(0..4, 0b1001);
