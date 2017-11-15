@@ -4,7 +4,7 @@ A simple crate which provides the `BitField` trait, which provides methods for o
 of bits on Rust's integral types.
 
 ## Documentation
-Documentation is available on [docs.rs](https://docs.rs/bit_field/0.7.0/bit_field/index.html)
+Documentation is available on [docs.rs](https://docs.rs/bit_field)
 
 ## Usage
 ```TOML
