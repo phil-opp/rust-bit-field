@@ -1,6 +1,7 @@
 //! Provides the abstraction of a bit field, which allows for bit-level update and retrieval
 //! operations.
 
+#![feature(const_size_of)]
 #![no_std]
 
 #[cfg(test)]
@@ -11,16 +12,15 @@ use core::ops::Range;
 /// A generic trait which provides methods for extracting and setting specific bits or ranges of
 /// bits.
 pub trait BitField {
-
-    /// Returns the length, eg number of bits, in this bit field.
+    /// The number of bits in this bit field.
     ///
     /// ```rust
     /// use bit_field::BitField;
     ///
-    /// assert_eq!(u32::bit_length(), 32);
-    /// assert_eq!(u64::bit_length(), 64);
+    /// assert_eq!(u32::BIT_LENGTH, 32);
+    /// assert_eq!(u64::BIT_LENGTH, 64);
     /// ```
-    fn bit_length() -> usize;
+    const BIT_LENGTH: usize;
 
     /// Obtains the bit at the index `bit`; note that index 0 is the least significant bit, while
     /// index `length() - 1` is the most significant bit.
@@ -204,30 +204,28 @@ pub trait BitArray<T: BitField> {
 macro_rules! bitfield_numeric_impl {
     ($($t:ty)*) => ($(
         impl BitField for $t {
-            fn bit_length() -> usize {
-                ::core::mem::size_of::<Self>() as usize * 8
-            }
+            const BIT_LENGTH: usize = ::core::mem::size_of::<Self>() as usize * 8;
 
             fn get_bit(&self, bit: usize) -> bool {
-                assert!(bit < Self::bit_length());
+                assert!(bit < Self::BIT_LENGTH);
 
                 (*self & (1 << bit)) != 0
             }
 
             fn get_bits(&self, range: Range<usize>) -> Self {
-                assert!(range.start < Self::bit_length());
-                assert!(range.end <= Self::bit_length());
+                assert!(range.start < Self::BIT_LENGTH);
+                assert!(range.end <= Self::BIT_LENGTH);
                 assert!(range.start < range.end);
 
                 // shift away high bits
-                let bits = *self << (Self::bit_length() - range.end) >> (Self::bit_length() - range.end);
+                let bits = *self << (Self::BIT_LENGTH - range.end) >> (Self::BIT_LENGTH - range.end);
 
                 // shift away low bits
                 bits >> range.start
             }
 
             fn set_bit(&mut self, bit: usize, value: bool) -> &mut Self {
-                assert!(bit < Self::bit_length());
+                assert!(bit < Self::BIT_LENGTH);
 
                 if value {
                     *self |= 1 << bit;
@@ -239,15 +237,15 @@ macro_rules! bitfield_numeric_impl {
             }
 
             fn set_bits(&mut self, range: Range<usize>, value: Self) -> &mut Self {
-                assert!(range.start < Self::bit_length());
-                assert!(range.end <= Self::bit_length());
+                assert!(range.start < Self::BIT_LENGTH);
+                assert!(range.end <= Self::BIT_LENGTH);
                 assert!(range.start < range.end);
-                assert!(value << (Self::bit_length() - (range.end - range.start)) >>
-                        (Self::bit_length() - (range.end - range.start)) == value,
+                assert!(value << (Self::BIT_LENGTH - (range.end - range.start)) >>
+                        (Self::BIT_LENGTH - (range.end - range.start)) == value,
                         "value does not fit into bit range");
 
-                let bitmask: Self = !(!0 << (Self::bit_length() - range.end) >>
-                                    (Self::bit_length() - range.end) >>
+                let bitmask: Self = !(!0 << (Self::BIT_LENGTH - range.end) >>
+                                    (Self::BIT_LENGTH - range.end) >>
                                     range.start << range.start);
 
                 // set bits
@@ -263,22 +261,22 @@ bitfield_numeric_impl! { u8 u16 u32 u64 usize i8 i16 i32 i64 isize }
 
 impl<T: BitField> BitArray<T> for [T] {
     fn bit_length(&self) -> usize {
-        self.len() * T::bit_length()
+        self.len() * T::BIT_LENGTH
     }
 
     fn get_bit(&self, bit: usize) -> bool {
-        let slice_index = bit / T::bit_length();
-        let bit_index = bit % T::bit_length();
+        let slice_index = bit / T::BIT_LENGTH;
+        let bit_index = bit % T::BIT_LENGTH;
         self[slice_index].get_bit(bit_index)
     }
 
     fn get_bits(&self, range: Range<usize>) -> T {
-        assert!(range.len() <= T::bit_length());
+        assert!(range.len() <= T::BIT_LENGTH);
         
-        let slice_start = range.start/T::bit_length();
-        let slice_end = range.end / T::bit_length();
-        let bit_start = range.start % T::bit_length();
-        let bit_end = range.end % T::bit_length();
+        let slice_start = range.start/T::BIT_LENGTH;
+        let slice_end = range.end / T::BIT_LENGTH;
+        let bit_start = range.start % T::BIT_LENGTH;
+        let bit_end = range.end % T::BIT_LENGTH;
         let len = range.len();
 
         assert!(slice_end - slice_start<= 1);
@@ -286,37 +284,37 @@ impl<T: BitField> BitArray<T> for [T] {
         if slice_start == slice_end {
             self[slice_start].get_bits(bit_start..bit_end)
         } else if bit_end == 0 {
-            self[slice_start].get_bits(bit_start..T::bit_length())
+            self[slice_start].get_bits(bit_start..T::BIT_LENGTH)
         } else {
-            let mut ret = self[slice_start].get_bits(bit_start..T::bit_length());
-            ret.set_bits((T::bit_length() - bit_start)..len, self[slice_end].get_bits(0..bit_end));
+            let mut ret = self[slice_start].get_bits(bit_start..T::BIT_LENGTH);
+            ret.set_bits((T::BIT_LENGTH - bit_start)..len, self[slice_end].get_bits(0..bit_end));
             ret
         }
     }
 
     fn set_bit(&mut self, bit: usize, value: bool) {
-        let slice_index = bit / T::bit_length();
-        let bit_index = bit % T::bit_length();
+        let slice_index = bit / T::BIT_LENGTH;
+        let bit_index = bit % T::BIT_LENGTH;
         self[slice_index].set_bit(bit_index, value);
     }
 
     fn set_bits(&mut self, range: Range<usize>, value: T) {
-        assert!(range.len() <= T::bit_length());
+        assert!(range.len() <= T::BIT_LENGTH);
 
-        let slice_start = range.start/T::bit_length();
-        let slice_end = range.end / T::bit_length();
-        let bit_start = range.start % T::bit_length();
-        let bit_end = range.end % T::bit_length();
+        let slice_start = range.start/T::BIT_LENGTH;
+        let slice_end = range.end / T::BIT_LENGTH;
+        let bit_start = range.start % T::BIT_LENGTH;
+        let bit_end = range.end % T::BIT_LENGTH;
         
         assert!(slice_end - slice_start<= 1);
         
         if slice_start == slice_end {
             self[slice_start].set_bits(bit_start..bit_end, value);
         } else if bit_end == 0 {
-            self[slice_start].set_bits(bit_start..T::bit_length(), value);
+            self[slice_start].set_bits(bit_start..T::BIT_LENGTH, value);
         } else {
-            self[slice_start].set_bits(bit_start..T::bit_length(), value.get_bits(0..T::bit_length()-bit_start));
-            self[slice_end].set_bits(0..bit_end, value.get_bits(T::bit_length()-bit_start..T::bit_length()));
+            self[slice_start].set_bits(bit_start..T::BIT_LENGTH, value.get_bits(0..T::BIT_LENGTH-bit_start));
+            self[slice_end].set_bits(0..bit_end, value.get_bits(T::BIT_LENGTH-bit_start..T::BIT_LENGTH));
         }
     }
     

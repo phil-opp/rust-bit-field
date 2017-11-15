@@ -3,15 +3,15 @@ use BitArray;
 
 #[test]
 fn test_integer_bit_lengths() {
-    assert_eq!(u8::bit_length(), 8);
-    assert_eq!(u16::bit_length(), 16);
-    assert_eq!(u32::bit_length(), 32);
-    assert_eq!(u64::bit_length(), 64);
+    assert_eq!(u8::BIT_LENGTH, 8);
+    assert_eq!(u16::BIT_LENGTH, 16);
+    assert_eq!(u32::BIT_LENGTH, 32);
+    assert_eq!(u64::BIT_LENGTH, 64);
 
-    assert_eq!(i8::bit_length(), 8);
-    assert_eq!(i16::bit_length(), 16);
-    assert_eq!(i32::bit_length(), 32);
-    assert_eq!(i64::bit_length(), 64);
+    assert_eq!(i8::BIT_LENGTH, 8);
+    assert_eq!(i16::BIT_LENGTH, 16);
+    assert_eq!(i32::BIT_LENGTH, 32);
+    assert_eq!(i64::BIT_LENGTH, 64);
 }
 
 #[test]
