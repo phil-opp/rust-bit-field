@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 ### Changed
  - `BitField` trait now has a `BIT_LENGTH` associated const instead of a `bit_length` associated function.
+ - `BitField` and `BitArray` methods are now inlined which causes much higher performance.
 ### Deprecated
 ### Removed
 ### Fixed

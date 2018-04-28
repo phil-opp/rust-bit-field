@@ -205,12 +205,14 @@ macro_rules! bitfield_numeric_impl {
         impl BitField for $t {
             const BIT_LENGTH: usize = ::core::mem::size_of::<Self>() as usize * 8;
 
+            #[inline]
             fn get_bit(&self, bit: usize) -> bool {
                 assert!(bit < Self::BIT_LENGTH);
 
                 (*self & (1 << bit)) != 0
             }
 
+            #[inline]
             fn get_bits(&self, range: Range<usize>) -> Self {
                 assert!(range.start < Self::BIT_LENGTH);
                 assert!(range.end <= Self::BIT_LENGTH);
@@ -223,6 +225,7 @@ macro_rules! bitfield_numeric_impl {
                 bits >> range.start
             }
 
+            #[inline]
             fn set_bit(&mut self, bit: usize, value: bool) -> &mut Self {
                 assert!(bit < Self::BIT_LENGTH);
 
@@ -235,6 +238,7 @@ macro_rules! bitfield_numeric_impl {
                 self
             }
 
+            #[inline]
             fn set_bits(&mut self, range: Range<usize>, value: Self) -> &mut Self {
                 assert!(range.start < Self::BIT_LENGTH);
                 assert!(range.end <= Self::BIT_LENGTH);
@@ -259,16 +263,19 @@ macro_rules! bitfield_numeric_impl {
 bitfield_numeric_impl! { u8 u16 u32 u64 usize i8 i16 i32 i64 isize }
 
 impl<T: BitField> BitArray<T> for [T] {
+    #[inline]
     fn bit_length(&self) -> usize {
         self.len() * T::BIT_LENGTH
     }
 
+    #[inline]
     fn get_bit(&self, bit: usize) -> bool {
         let slice_index = bit / T::BIT_LENGTH;
         let bit_index = bit % T::BIT_LENGTH;
         self[slice_index].get_bit(bit_index)
     }
 
+    #[inline]
     fn get_bits(&self, range: Range<usize>) -> T {
         assert!(range.len() <= T::BIT_LENGTH);
         
@@ -291,12 +298,14 @@ impl<T: BitField> BitArray<T> for [T] {
         }
     }
 
+    #[inline]
     fn set_bit(&mut self, bit: usize, value: bool) {
         let slice_index = bit / T::BIT_LENGTH;
         let bit_index = bit % T::BIT_LENGTH;
         self[slice_index].set_bit(bit_index, value);
     }
 
+    #[inline]
     fn set_bits(&mut self, range: Range<usize>, value: T) {
         assert!(range.len() <= T::BIT_LENGTH);
 
