@@ -8,4 +8,7 @@ cache: cargo
 
 sudo: false
 
-
+script:
+  - cargo build --verbose --all
+  - cargo test --verbose --all
+  - cargo +nightly bench --verbose --all
