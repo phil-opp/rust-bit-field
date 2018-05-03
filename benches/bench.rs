@@ -108,7 +108,7 @@ extern crate test;
 
 use test::Bencher;
 
-const len: usize = 256;
+const LEN: usize = 256;
 
 
 fn set_bitfield<T:BitField>(v: &mut Vec<T>) {
@@ -146,7 +146,7 @@ fn get_bitfield<T:BitField>(v: &Vec<T>) {
 
 #[bench]
 fn u8_set_bitfield(b: &mut Bencher) {
-    let mut v = vec![0u8; len];
+    let mut v = vec![0u8; LEN];
     b.iter(|| {
         set_bitfield(&mut v);
     });
@@ -154,7 +154,7 @@ fn u8_set_bitfield(b: &mut Bencher) {
 
 #[bench]
 fn u8_set_trivial(b: &mut Bencher) {
-    let mut v = vec![0u8; len];
+    let mut v = vec![0u8; LEN];
 
     b.iter(|| {
        set_trivial(&mut v);
@@ -163,7 +163,7 @@ fn u8_set_trivial(b: &mut Bencher) {
 
 #[bench]
 fn u8_get_bitfield(b: &mut Bencher) {
-    let v = vec![1u8; len];
+    let v = vec![1u8; LEN];
     b.iter(|| {
        get_bitfield(&v);
     });
@@ -171,7 +171,7 @@ fn u8_get_bitfield(b: &mut Bencher) {
 
 #[bench]
 fn u8_get_trivial(b: &mut Bencher) {
-    let v = vec![1u8; len];
+    let v = vec![1u8; LEN];
     b.iter(|| {
         get_trivial(&v);
     });
@@ -181,7 +181,7 @@ fn u8_get_trivial(b: &mut Bencher) {
 
 #[bench]
 fn u32_set_bitfield(b: &mut Bencher) {
-    let mut v = vec![0u32; len];
+    let mut v = vec![0u32; LEN];
     b.iter(|| {
         set_bitfield(&mut v);
     });
@@ -189,7 +189,7 @@ fn u32_set_bitfield(b: &mut Bencher) {
 
 #[bench]
 fn u32_set_trivial(b: &mut Bencher) {
-    let mut v = vec![0u32; len];
+    let mut v = vec![0u32; LEN];
 
     b.iter(|| {
        set_trivial(&mut v);
@@ -198,7 +198,7 @@ fn u32_set_trivial(b: &mut Bencher) {
 
 #[bench]
 fn u32_get_bitfield(b: &mut Bencher) {
-    let v = vec![1u32; len];
+    let v = vec![1u32; LEN];
     b.iter(|| {
        get_bitfield(&v);
     });
@@ -206,7 +206,7 @@ fn u32_get_bitfield(b: &mut Bencher) {
 
 #[bench]
 fn u32_get_trivial(b: &mut Bencher) {
-    let v = vec![1u32; len];
+    let v = vec![1u32; LEN];
     b.iter(|| {
         get_trivial(&v);
     });
@@ -214,7 +214,7 @@ fn u32_get_trivial(b: &mut Bencher) {
 
 #[bench]
 fn u64_set_bitfield(b: &mut Bencher) {
-    let mut v = vec![0u64; len];
+    let mut v = vec![0u64; LEN];
     b.iter(|| {
         set_bitfield(&mut v);
     });
@@ -222,7 +222,7 @@ fn u64_set_bitfield(b: &mut Bencher) {
 
 #[bench]
 fn u64_set_trivial(b: &mut Bencher) {
-    let mut v = vec![0u64; len];
+    let mut v = vec![0u64; LEN];
 
     b.iter(|| {
        set_trivial(&mut v);
@@ -231,7 +231,7 @@ fn u64_set_trivial(b: &mut Bencher) {
 
 #[bench]
 fn u64_get_bitfield(b: &mut Bencher) {
-    let v = vec![1u64; len];
+    let v = vec![1u64; LEN];
     b.iter(|| {
        get_bitfield(&v);
     });
@@ -239,7 +239,7 @@ fn u64_get_bitfield(b: &mut Bencher) {
 
 #[bench]
 fn u64_get_trivial(b: &mut Bencher) {
-    let v = vec![1u64; len];
+    let v = vec![1u64; LEN];
     b.iter(|| {
         get_trivial(&v);
     });
