@@ -131,12 +131,6 @@ fn get_bitfield<T:BitField>(v: &Vec<T>) {
         }
 }
 
- fn toggle<T:BitOper>(v: &mut Vec<T>) {
-        for i in 0..v.len() * T::BIT_LEN {
-            v.toggle(i);
-        }
-}
-
  fn get_trivial<T:BitOper>(v: &Vec<T>) {
         for i in 0..v.len() * T::BIT_LEN {
             let _b = v.get_b(i);
