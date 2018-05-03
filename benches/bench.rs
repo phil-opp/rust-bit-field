@@ -212,9 +212,6 @@ fn u32_get_trivial(b: &mut Bencher) {
     });
 }
 
-
-/*
-
 #[bench]
 fn u64_set_bitfield(b: &mut Bencher) {
     let mut v = vec![0u64; len];
@@ -247,4 +244,3 @@ fn u64_get_trivial(b: &mut Bencher) {
         get_trivial(&v);
     });
 }
-*/
