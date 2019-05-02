@@ -6,7 +6,7 @@
 #[cfg(test)]
 mod tests;
 
-use core::ops::Range;
+use core::ops::{Bound, Range, RangeBounds};
 
 /// A generic trait which provides methods for extracting and setting specific bits or ranges of
 /// bits.
@@ -54,7 +54,7 @@ pub trait BitField {
     ///
     /// This method will panic if the start or end indexes of the range are out of bounds of the
     /// bit field.
-    fn get_bits(&self, range: Range<usize>) -> Self;
+    fn get_bits<T: RangeBounds<usize>>(&self, range: T) -> Self;
 
     /// Sets the bit at the index `bit` to the value `value` (where true means a value of '1' and
     /// false means a value of '0'); note that index 0 is the least significant bit, while index
@@ -100,9 +100,8 @@ pub trait BitField {
     ///
     /// This method will panic if the range is out of bounds of the bit field, or if there are `1`s 
     /// not in the lower N bits of `value`.
-    fn set_bits(&mut self, range: Range<usize>, value: Self) -> &mut Self;
+    fn set_bits<T: RangeBounds<usize>>(&mut self, range: T, value: Self) -> &mut Self;
 }
-
 
 pub trait BitArray<T: BitField> {
     /// Returns the length, eg number of bits, in this bit array.
@@ -148,7 +147,7 @@ pub trait BitArray<T: BitField> {
     ///
     /// This method will panic if the start or end indexes of the range are out of bounds of the
     /// bit array, or if the range can't be contained by the bit field T.
-    fn get_bits(&self, range: Range<usize>) -> T;
+    fn get_bits<U: RangeBounds<usize>>(&self, range: U) -> T;
 
     /// Sets the bit at the index `bit` to the value `value` (where true means a value of '1' and
     /// false means a value of '0'); note that index 0 is the least significant bit, while index
@@ -195,9 +194,8 @@ pub trait BitArray<T: BitField> {
     /// This method will panic if the range is out of bounds of the bit array,
     /// if the range can't be contained by the bit field T, or if there are `1`s 
     /// not in the lower N bits of `value`.
-    fn set_bits(&mut self, range: Range<usize>, value: T);
+    fn set_bits<U: RangeBounds<usize>>(&mut self, range: U, value: T);
 }
-
 
 /// An internal macro used for implementing BitField on the standard integral types.
 macro_rules! bitfield_numeric_impl {
@@ -213,7 +211,9 @@ macro_rules! bitfield_numeric_impl {
             }
 
             #[inline]
-            fn get_bits(&self, range: Range<usize>) -> Self {
+            fn get_bits<T: RangeBounds<usize>>(&self, range: T) -> Self {
+                let range = to_regular_range(&range, Self::BIT_LENGTH);
+
                 assert!(range.start < Self::BIT_LENGTH);
                 assert!(range.end <= Self::BIT_LENGTH);
                 assert!(range.start < range.end);
@@ -239,7 +239,9 @@ macro_rules! bitfield_numeric_impl {
             }
 
             #[inline]
-            fn set_bits(&mut self, range: Range<usize>, value: Self) -> &mut Self {
+            fn set_bits<T: RangeBounds<usize>>(&mut self, range: T, value: Self) -> &mut Self {
+                let range = to_regular_range(&range, Self::BIT_LENGTH);
+
                 assert!(range.start < Self::BIT_LENGTH);
                 assert!(range.end <= Self::BIT_LENGTH);
                 assert!(range.start < range.end);
@@ -276,16 +278,18 @@ impl<T: BitField> BitArray<T> for [T] {
     }
 
     #[inline]
-    fn get_bits(&self, range: Range<usize>) -> T {
+    fn get_bits<U: RangeBounds<usize>>(&self, range: U) -> T {
+        let range = to_regular_range(&range, self.bit_length());
+
         assert!(range.len() <= T::BIT_LENGTH);
         
-        let slice_start = range.start/T::BIT_LENGTH;
+        let slice_start = range.start / T::BIT_LENGTH;
         let slice_end = range.end / T::BIT_LENGTH;
         let bit_start = range.start % T::BIT_LENGTH;
         let bit_end = range.end % T::BIT_LENGTH;
         let len = range.len();
 
-        assert!(slice_end - slice_start<= 1);
+        assert!(slice_end - slice_start <= 1);
         
         if slice_start == slice_end {
             self[slice_start].get_bits(bit_start..bit_end)
@@ -293,7 +297,10 @@ impl<T: BitField> BitArray<T> for [T] {
             self[slice_start].get_bits(bit_start..T::BIT_LENGTH)
         } else {
             let mut ret = self[slice_start].get_bits(bit_start..T::BIT_LENGTH);
-            ret.set_bits((T::BIT_LENGTH - bit_start)..len, self[slice_end].get_bits(0..bit_end));
+            ret.set_bits(
+                (T::BIT_LENGTH - bit_start)..len,
+                self[slice_end].get_bits(0..bit_end),
+            );
             ret
         }
     }
@@ -306,25 +313,46 @@ impl<T: BitField> BitArray<T> for [T] {
     }
 
     #[inline]
-    fn set_bits(&mut self, range: Range<usize>, value: T) {
+    fn set_bits<U: RangeBounds<usize>>(&mut self, range: U, value: T) {
+        let range = to_regular_range(&range, self.bit_length());
+
         assert!(range.len() <= T::BIT_LENGTH);
 
-        let slice_start = range.start/T::BIT_LENGTH;
+        let slice_start = range.start / T::BIT_LENGTH;
         let slice_end = range.end / T::BIT_LENGTH;
         let bit_start = range.start % T::BIT_LENGTH;
         let bit_end = range.end % T::BIT_LENGTH;
         
-        assert!(slice_end - slice_start<= 1);
+        assert!(slice_end - slice_start <= 1);
         
         if slice_start == slice_end {
             self[slice_start].set_bits(bit_start..bit_end, value);
         } else if bit_end == 0 {
             self[slice_start].set_bits(bit_start..T::BIT_LENGTH, value);
         } else {
-            self[slice_start].set_bits(bit_start..T::BIT_LENGTH, value.get_bits(0..T::BIT_LENGTH-bit_start));
-            self[slice_end].set_bits(0..bit_end, value.get_bits(T::BIT_LENGTH-bit_start..T::BIT_LENGTH));
+            self[slice_start].set_bits(
+                bit_start..T::BIT_LENGTH,
+                value.get_bits(0..T::BIT_LENGTH - bit_start),
+            );
+            self[slice_end].set_bits(
+                0..bit_end,
+                value.get_bits(T::BIT_LENGTH - bit_start..T::BIT_LENGTH),
+            );
+        }
         }
     }
     
-}
+fn to_regular_range<T: RangeBounds<usize>>(generic_rage: &T, bit_length: usize) -> Range<usize> {
+    let start = match generic_rage.start_bound() {
+        Bound::Excluded(&value) => value + 1,
+        Bound::Included(&value) => value,
+        Bound::Unbounded => 0,
+    };
+    let end = match generic_rage.end_bound() {
+        Bound::Excluded(&value) => value,
+        Bound::Included(&value) => value + 1,
+        Bound::Unbounded => bit_length,
+    };
 
+    start..end
+}
