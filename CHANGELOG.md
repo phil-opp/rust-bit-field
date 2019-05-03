@@ -7,16 +7,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased]
 ### Added
 ### Changed
- - `BitField` trait now has a `BIT_LENGTH` associated const instead of a `bit_length` associated function.
- - `BitField` and `BitArray` methods are now inlined which causes much higher performance.
 ### Deprecated
 ### Removed
 ### Fixed
 ### Security
 
-## [0.9.1] - 2019-05-03
+## [0.10.0] - 2019-05-03
 ### Added
  - Support all range types (`Range`, `RangeInclusive`, `RangeFrom`, …) for `get_bits` and `set_bits` methods ([#22](https://github.com/phil-opp/rust-bit-field/pull/22))
+
+### Changed
+ - **Breaking**: `BitField` trait now has a `BIT_LENGTH` associated const instead of a `bit_length` associated function.
+ - `BitField` and `BitArray` methods are now inlined which causes much higher performance.
 
 ## [0.9.0] - 2017-10-15
 ### Changed
