@@ -14,6 +14,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 ### Security
 
+## [0.9.1] - 2019-05-03
+### Added
+ - Support all range types (`Range`, `RangeInclusive`, `RangeFrom`, …) for `get_bits` and `set_bits` methods ([#22](https://github.com/phil-opp/rust-bit-field/pull/22))
+
 ## [0.9.0] - 2017-10-15
 ### Changed
  - Bit indexes in `BitField` is now `usize` instead of `u8`.
