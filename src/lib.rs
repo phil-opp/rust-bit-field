@@ -270,7 +270,7 @@ macro_rules! bitfield_numeric_impl {
     )*)
 }
 
-bitfield_numeric_impl! { u8 u16 u32 u64 usize i8 i16 i32 i64 isize }
+bitfield_numeric_impl! { u8 u16 u32 u64 u128 usize i8 i16 i32 i64 i128 isize }
 
 impl<T: BitField> BitArray<T> for [T] {
     #[inline]
