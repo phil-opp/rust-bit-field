@@ -1,5 +1,7 @@
 ## Unreleased
 
+# 0.10.1 – 2020-08-23
+
 - Added bit manipulation functions for 128-bit integers ([#24](https://github.com/phil-opp/rust-bit-field/pull/24))
 
 ## [0.10.0] - 2019-05-03
