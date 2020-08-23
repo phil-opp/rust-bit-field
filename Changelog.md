@@ -1,5 +1,7 @@
 ## Unreleased
 
+- Added bit manipulation functions for 128-bit integers ([#24](https://github.com/phil-opp/rust-bit-field/pull/24))
+
 ## [0.10.0] - 2019-05-03
 ### Added
  - Support all range types (`Range`, `RangeInclusive`, `RangeFrom`, …) for `get_bits` and `set_bits` methods ([#22](https://github.com/phil-opp/rust-bit-field/pull/22))
