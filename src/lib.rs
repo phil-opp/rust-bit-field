@@ -211,6 +211,7 @@ macro_rules! bitfield_numeric_impl {
         impl BitField for $t {
             const BIT_LENGTH: usize = ::core::mem::size_of::<Self>() as usize * 8;
 
+            #[track_caller]
             #[inline]
             fn get_bit(&self, bit: usize) -> bool {
                 assert!(bit < Self::BIT_LENGTH);
@@ -218,6 +219,7 @@ macro_rules! bitfield_numeric_impl {
                 (*self & (1 << bit)) != 0
             }
 
+            #[track_caller]
             #[inline]
             fn get_bits<T: RangeBounds<usize>>(&self, range: T) -> Self {
                 let range = to_regular_range(&range, Self::BIT_LENGTH);
@@ -233,6 +235,7 @@ macro_rules! bitfield_numeric_impl {
                 bits >> range.start
             }
 
+            #[track_caller]
             #[inline]
             fn set_bit(&mut self, bit: usize, value: bool) -> &mut Self {
                 assert!(bit < Self::BIT_LENGTH);
@@ -246,6 +249,7 @@ macro_rules! bitfield_numeric_impl {
                 self
             }
 
+            #[track_caller]
             #[inline]
             fn set_bits<T: RangeBounds<usize>>(&mut self, range: T, value: Self) -> &mut Self {
                 let range = to_regular_range(&range, Self::BIT_LENGTH);
@@ -278,6 +282,7 @@ impl<T: BitField> BitArray<T> for [T] {
         self.len() * T::BIT_LENGTH
     }
 
+    #[track_caller]
     #[inline]
     fn get_bit(&self, bit: usize) -> bool {
         let slice_index = bit / T::BIT_LENGTH;
@@ -285,6 +290,7 @@ impl<T: BitField> BitArray<T> for [T] {
         self[slice_index].get_bit(bit_index)
     }
 
+    #[track_caller]
     #[inline]
     fn get_bits<U: RangeBounds<usize>>(&self, range: U) -> T {
         let range = to_regular_range(&range, self.bit_length());
@@ -313,6 +319,7 @@ impl<T: BitField> BitArray<T> for [T] {
         }
     }
 
+    #[track_caller]
     #[inline]
     fn set_bit(&mut self, bit: usize, value: bool) {
         let slice_index = bit / T::BIT_LENGTH;
@@ -320,6 +327,7 @@ impl<T: BitField> BitArray<T> for [T] {
         self[slice_index].set_bit(bit_index, value);
     }
 
+    #[track_caller]
     #[inline]
     fn set_bits<U: RangeBounds<usize>>(&mut self, range: U, value: T) {
         let range = to_regular_range(&range, self.bit_length());
