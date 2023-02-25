@@ -1,5 +1,7 @@
 ## Unreleased
 
+# 0.10.2 – 2023-02-25
+
 - Add `#[track_caller]` to methods ([#27](https://github.com/phil-opp/rust-bit-field/pull/27))
 
 # 0.10.1 – 2020-08-23
