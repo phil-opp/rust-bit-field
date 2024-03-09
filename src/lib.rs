@@ -358,6 +358,7 @@ impl<T: BitField> BitArray<T> for [T] {
     }
 }
 
+#[inline]
 fn to_regular_range<T: RangeBounds<usize>>(generic_rage: &T, bit_length: usize) -> Range<usize> {
     let start = match generic_rage.start_bound() {
         Bound::Excluded(&value) => value + 1,
