@@ -203,6 +203,18 @@ pub trait BitArray<T: BitField> {
     /// if the range can't be contained by the bit field T, or if there are `1`s
     /// not in the lower N bits of `value`.
     fn set_bits<U: RangeBounds<usize>>(&mut self, range: U, value: T);
+
+    /// Clears all the bits in this bit array in-place.
+    ///
+    /// ```rust
+    /// use bit_field::BitArray;
+    ///
+    /// let mut value = [1u32, 2u32, 3u32];
+    ///
+    /// value.clear();
+    /// assert_eq!(value, [0u32, 0u32, 0u32]);
+    /// ```
+    fn clear(&mut self);
 }
 
 /// An internal macro used for implementing BitField on the standard integral types.
@@ -276,7 +288,10 @@ macro_rules! bitfield_numeric_impl {
 
 bitfield_numeric_impl! { u8 u16 u32 u64 u128 usize i8 i16 i32 i64 i128 isize }
 
-impl<T: BitField> BitArray<T> for [T] {
+impl<T: BitField> BitArray<T> for [T]
+where
+    T: Default
+{
     #[inline]
     fn bit_length(&self) -> usize {
         self.len() * T::BIT_LENGTH
@@ -354,6 +369,14 @@ impl<T: BitField> BitArray<T> for [T] {
                 0..bit_end,
                 value.get_bits(T::BIT_LENGTH - bit_start..T::BIT_LENGTH),
             );
+        }
+    }
+
+    #[track_caller]
+    #[inline]
+    fn clear(&mut self) {
+        for item in self.iter_mut() {
+            *item = T::default();
         }
     }
 }

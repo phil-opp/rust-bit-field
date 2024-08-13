@@ -11,6 +11,9 @@ documentation = "https://docs.rs/bit_field"
 
 [dependencies]
 
+[dev-dependencies]
+rstest = "0.22"
+
 [package.metadata.release]
 dev-version = false
 pre-release-replacements = [

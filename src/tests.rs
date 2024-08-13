@@ -1,5 +1,11 @@
+use core::fmt::Debug;
 use BitArray;
 use BitField;
+
+#[cfg(test)]
+extern crate rstest;
+
+use self::rstest::*;
 
 #[test]
 fn test_integer_bit_lengths() {
@@ -337,6 +343,28 @@ fn test_set_range_u128() {
     assert_eq!(field.get_bits(..16), 0xdead);
     assert_eq!(field.get_bits(14..=31), 0xbeaf);
     assert_eq!(field.get_bits(32..), 0xcafebabe);
+}
+
+#[rstest]
+#[case(&mut [1u8, 2u8, 3u8], &[0u8, 0u8, 0u8])]
+#[case(&mut [0u8, 0u8, 0u8], &[0u8, 0u8, 0u8])]
+#[case(&mut [1u16, 2u16, 3u16], &[0u16, 0u16, 0u16])]
+#[case(&mut [0u16, 0u16, 0u16], &[0u16, 0u16, 0u16])]
+#[case(&mut [1u32, 2u32, 3u32], &[0u32, 0u32, 0u32])]
+#[case(&mut [0u32, 0u32, 0u32], &[0u32, 0u32, 0u32])]
+#[case(&mut [1u64, 2u64, 3u64], &[0u64, 0u64, 0u64])]
+#[case(&mut [0u64, 0u64, 0u64], &[0u64, 0u64, 0u64])]
+#[case(&mut [1u128, 2u128, 3u128], &[0u128, 0u128, 0u128])]
+#[case(&mut [0u128, 0u128, 0u128], &[0u128, 0u128, 0u128])]
+#[case(&mut [1isize, 2isize, 3isize], &[0isize, 0isize, 0isize])]
+#[case(&mut [0isize, 0isize, 0isize], &[0isize, 0isize, 0isize])]
+fn test_array_clear<T>(#[case] field: &mut [T], #[case] expected_result: &[T])
+where
+    T: Default + PartialEq + Debug + BitField
+{
+    field.clear();
+
+    assert_eq!(field, expected_result);
 }
 
 #[test]
