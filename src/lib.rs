@@ -226,13 +226,17 @@ macro_rules! bitfield_numeric_impl {
 
                 assert!(range.start < Self::BIT_LENGTH);
                 assert!(range.end <= Self::BIT_LENGTH);
-                assert!(range.start < range.end);
+                assert!(range.start <= range.end);
 
-                // shift away high bits
-                let bits = *self << (Self::BIT_LENGTH - range.end) >> (Self::BIT_LENGTH - range.end);
+                if range.start == range.end {
+                    0
+                } else {
+                    // shift away high bits
+                    let bits = *self << (Self::BIT_LENGTH - range.end) >> (Self::BIT_LENGTH - range.end);
 
-                // shift away low bits
-                bits >> range.start
+                    // shift away low bits
+                    bits >> range.start
+                }
             }
 
             #[track_caller]
@@ -256,18 +260,19 @@ macro_rules! bitfield_numeric_impl {
 
                 assert!(range.start < Self::BIT_LENGTH);
                 assert!(range.end <= Self::BIT_LENGTH);
-                assert!(range.start < range.end);
-                assert!(value << (Self::BIT_LENGTH - (range.end - range.start)) >>
-                        (Self::BIT_LENGTH - (range.end - range.start)) == value,
+                assert!(range.start <= range.end);
+                assert!(range.start == range.end && value == 0 ||
+                        value << (Self::BIT_LENGTH - (range.end - range.start)) >>
+                            (Self::BIT_LENGTH - (range.end - range.start)) == value,
                         "value does not fit into bit range");
+                if range.start != range.end {
+                    let bitmask: Self = !(!0 << (Self::BIT_LENGTH - range.end) >>
+                                        (Self::BIT_LENGTH - range.end) >>
+                                        range.start << range.start);
 
-                let bitmask: Self = !(!0 << (Self::BIT_LENGTH - range.end) >>
-                                    (Self::BIT_LENGTH - range.end) >>
-                                    range.start << range.start);
-
-                // set bits
-                *self = (*self & bitmask) | (value << range.start);
-
+                    // set bits
+                    *self = (*self & bitmask) | (value << range.start);
+                }
                 self
             }
         }
