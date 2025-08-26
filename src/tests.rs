@@ -64,6 +64,9 @@ fn test_read_u32() {
         assert_eq!(field.get_bit(i), false);
     }
 
+    assert_eq!(field.get_bits(0..0), 0);
+    assert_eq!(field.get_bits(1..1), 0);
+
     assert_eq!(field.get_bits(16..), 0);
     assert_eq!(field.get_bits(16..32), 0);
     assert_eq!(field.get_bits(16..=31), 0);
@@ -102,6 +105,12 @@ fn test_set_reset_u32() {
 #[test]
 fn test_set_range_u32() {
     let mut field = 0b1111111111010110u32;
+
+    field.set_bits(0..0, 0b00000);
+    assert_eq!(field, 0b1111111111010110u32);
+    field.set_bits(1..1, 0b00000);
+    assert_eq!(field, 0b1111111111010110u32);
+
     field.set_bits(10..15, 0b00000);
     assert_eq!(field.get_bits(10..15), 0b00000);
     assert_eq!(field.get_bits(10..=14), 0b00000);
