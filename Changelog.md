@@ -1,5 +1,7 @@
 ## Unreleased
 
+# 0.10.3 – 2025-08-26
+
 - [add #[inline] to to_regular_range](https://github.com/phil-opp/rust-bit-field/pull/30)
 - [allow empty range on get/set bits](https://github.com/phil-opp/rust-bit-field/pull/34)
 - [Add Security Policy](https://github.com/phil-opp/rust-bit-field/pull/29)
