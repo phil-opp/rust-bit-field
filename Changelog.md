@@ -1,5 +1,7 @@
 ## Unreleased
 
+- Add `BitField::set_bit_to` as an alias for `set_bit` to avoid the `unstable_name_collisions` lint caused by the unstable `set_bit` method on integer types in nightly Rust ([rust-lang/rust#147702](https://github.com/rust-lang/rust/issues/147702))
+
 # 0.10.3 – 2025-08-26
 
 - [add #[inline] to to_regular_range](https://github.com/phil-opp/rust-bit-field/pull/30)
