@@ -80,7 +80,24 @@ pub trait BitField {
     /// ## Panics
     ///
     /// This method will panic if the bit index is out of the bounds of the bit field.
+    ///
+    /// ## Name collision with `core`
+    ///
+    /// Nightly Rust has an unstable inherent `set_bit` method on integer types (feature
+    /// [`get_set_bit`](https://github.com/rust-lang/rust/issues/147702)), which returns a modified
+    /// copy instead of updating the value in place.
+    /// Calling `value.set_bit(..)` therefore triggers the `unstable_name_collisions` lint, and
+    /// would resolve to the inherent method if it were stabilized under this name. Use
+    /// [`set_bit_to`](BitField::set_bit_to) to avoid this ambiguity.
     fn set_bit(&mut self, bit: usize, value: bool) -> &mut Self;
+
+    /// Alias for [`set_bit`](BitField::set_bit) that does not collide with the unstable
+    /// `set_bit` method on integer types in `core`.
+    #[track_caller]
+    #[inline]
+    fn set_bit_to(&mut self, bit: usize, value: bool) -> &mut Self {
+        self.set_bit(bit, value)
+    }
 
     /// Sets the range of bits defined by the range `range` to the lower bits of `value`; to be
     /// specific, if the range is N bits long, the N lower bits of `value` will be used; if any of
