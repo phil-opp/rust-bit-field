@@ -9,7 +9,7 @@ Documentation is available on [docs.rs](https://docs.rs/bit_field)
 ## Usage
 ```TOML
 [dependencies]
-bit_field = "0.10.1"
+bit_field = "0.10"
 ```
 
 ## Example
