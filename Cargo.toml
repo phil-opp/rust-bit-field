@@ -1,6 +1,6 @@
 [package]
 name = "bit_field"
-version = "0.10.3"
+version = "0.10.4"
 authors = ["Philipp Oppermann <dev@phil-opp.com>"]
 edition = "2015"
 license = "MIT OR Apache-2.0"
