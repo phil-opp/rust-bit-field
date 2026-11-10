@@ -2,6 +2,7 @@
 name = "bit_field"
 version = "0.10.3"
 authors = ["Philipp Oppermann <dev@phil-opp.com>"]
+edition = "2015"
 license = "Apache-2.0/MIT"
 
 description = "Simple bit field trait providing get_bit, get_bits, set_bit, and set_bits methods for Rust's integral types."
