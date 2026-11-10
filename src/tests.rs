@@ -21,11 +21,11 @@ fn test_set_reset_u8() {
     let mut field = 0b11110010u8;
     let mut bit_i = |i| {
         field.set_bit(i, true);
-        assert_eq!(field.get_bit(i), true);
+        assert!(field.get_bit(i));
         field.set_bit(i, false);
-        assert_eq!(field.get_bit(i), false);
+        assert!(!field.get_bit(i));
         field.set_bit(i, true);
-        assert_eq!(field.get_bit(i), true);
+        assert!(field.get_bit(i));
     };
     for i in 0..8 {
         bit_i(i);
@@ -37,11 +37,11 @@ fn test_set_reset_u16() {
     let mut field = 0b1111001010010110u16;
     let mut bit_i = |i| {
         field.set_bit(i, true);
-        assert_eq!(field.get_bit(i), true);
+        assert!(field.get_bit(i));
         field.set_bit(i, false);
-        assert_eq!(field.get_bit(i), false);
+        assert!(!field.get_bit(i));
         field.set_bit(i, true);
-        assert_eq!(field.get_bit(i), true);
+        assert!(field.get_bit(i));
     };
     for i in 0..16 {
         bit_i(i);
@@ -51,17 +51,17 @@ fn test_set_reset_u16() {
 #[test]
 fn test_read_u32() {
     let field = 0b1111111111010110u32;
-    assert_eq!(field.get_bit(0), false);
-    assert_eq!(field.get_bit(1), true);
-    assert_eq!(field.get_bit(2), true);
-    assert_eq!(field.get_bit(3), false);
-    assert_eq!(field.get_bit(4), true);
-    assert_eq!(field.get_bit(5), false);
+    assert!(!field.get_bit(0));
+    assert!(field.get_bit(1));
+    assert!(field.get_bit(2));
+    assert!(!field.get_bit(3));
+    assert!(field.get_bit(4));
+    assert!(!field.get_bit(5));
     for i in 6..16 {
-        assert_eq!(field.get_bit(i), true);
+        assert!(field.get_bit(i));
     }
     for i in 16..32 {
-        assert_eq!(field.get_bit(i), false);
+        assert!(!field.get_bit(i));
     }
 
     assert_eq!(field.get_bits(0..0), 0);
@@ -91,11 +91,11 @@ fn test_set_reset_u32() {
     let mut field = 0b1111111111010110u32;
     let mut bit_i = |i| {
         field.set_bit(i, true);
-        assert_eq!(field.get_bit(i), true);
+        assert!(field.get_bit(i));
         field.set_bit(i, false);
-        assert_eq!(field.get_bit(i), false);
+        assert!(!field.get_bit(i));
         field.set_bit(i, true);
-        assert_eq!(field.get_bit(i), true);
+        assert!(field.get_bit(i));
     };
     for i in 0..32 {
         bit_i(i);
@@ -152,19 +152,19 @@ fn test_set_range_u32() {
 fn test_read_u64() {
     let field = 0b1111111111010110u64 << 32;
     for i in 0..32 {
-        assert_eq!(field.get_bit(i), false);
+        assert!(!field.get_bit(i));
     }
-    assert_eq!(field.get_bit(32), false);
-    assert_eq!(field.get_bit(33), true);
-    assert_eq!(field.get_bit(34), true);
-    assert_eq!(field.get_bit(35), false);
-    assert_eq!(field.get_bit(36), true);
-    assert_eq!(field.get_bit(37), false);
+    assert!(!field.get_bit(32));
+    assert!(field.get_bit(33));
+    assert!(field.get_bit(34));
+    assert!(!field.get_bit(35));
+    assert!(field.get_bit(36));
+    assert!(!field.get_bit(37));
     for i in 38..48 {
-        assert_eq!(field.get_bit(i), true);
+        assert!(field.get_bit(i));
     }
     for i in 48..64 {
-        assert_eq!(field.get_bit(i), false);
+        assert!(!field.get_bit(i));
     }
 
     assert_eq!(field.get_bits(..32), 0);
@@ -193,11 +193,11 @@ fn test_set_reset_u64() {
     let mut field = 0b1111111111010110u64 << 32;
     let mut bit_i = |i| {
         field.set_bit(i, true);
-        assert_eq!(field.get_bit(i), true);
+        assert!(field.get_bit(i));
         field.set_bit(i, false);
-        assert_eq!(field.get_bit(i), false);
+        assert!(!field.get_bit(i));
         field.set_bit(i, true);
-        assert_eq!(field.get_bit(i), true);
+        assert!(field.get_bit(i));
     };
     for i in 0..64 {
         bit_i(i);
@@ -252,19 +252,19 @@ fn test_set_range_u64() {
 fn test_read_u128() {
     let field = 0b1111111111010110u128 << 32;
     for i in 0..32 {
-        assert_eq!(field.get_bit(i), false);
+        assert!(!field.get_bit(i));
     }
-    assert_eq!(field.get_bit(32), false);
-    assert_eq!(field.get_bit(33), true);
-    assert_eq!(field.get_bit(34), true);
-    assert_eq!(field.get_bit(35), false);
-    assert_eq!(field.get_bit(36), true);
-    assert_eq!(field.get_bit(37), false);
+    assert!(!field.get_bit(32));
+    assert!(field.get_bit(33));
+    assert!(field.get_bit(34));
+    assert!(!field.get_bit(35));
+    assert!(field.get_bit(36));
+    assert!(!field.get_bit(37));
     for i in 38..48 {
-        assert_eq!(field.get_bit(i), true);
+        assert!(field.get_bit(i));
     }
     for i in 48..64 {
-        assert_eq!(field.get_bit(i), false);
+        assert!(!field.get_bit(i));
     }
 
     assert_eq!(field.get_bits(..32), 0);
@@ -293,11 +293,11 @@ fn test_set_reset_u128() {
     let mut field = 0b1111111111010110u128 << 32;
     let mut bit_i = |i| {
         field.set_bit(i, true);
-        assert_eq!(field.get_bit(i), true);
+        assert!(field.get_bit(i));
         field.set_bit(i, false);
-        assert_eq!(field.get_bit(i), false);
+        assert!(!field.get_bit(i));
         field.set_bit(i, true);
-        assert_eq!(field.get_bit(i), true);
+        assert!(field.get_bit(i));
     };
     for i in 0..64 {
         bit_i(i);
@@ -350,31 +350,31 @@ fn test_set_range_u128() {
 
 #[test]
 fn test_array_length() {
-    assert_eq!((&[2u8, 3u8, 4u8]).bit_length(), 24);
-    assert_eq!((&[2i8, 3i8, 4i8, 5i8]).bit_length(), 32);
+    assert_eq!([2u8, 3u8, 4u8].bit_length(), 24);
+    assert_eq!([2i8, 3i8, 4i8, 5i8].bit_length(), 32);
 
-    assert_eq!((&[2u16, 3u16, 4u16]).bit_length(), 48);
-    assert_eq!((&[2i16, 3i16, 4i16, 5i16]).bit_length(), 64);
+    assert_eq!([2u16, 3u16, 4u16].bit_length(), 48);
+    assert_eq!([2i16, 3i16, 4i16, 5i16].bit_length(), 64);
 
-    assert_eq!((&[2u32, 3u32, 4u32]).bit_length(), 96);
-    assert_eq!((&[2i32, 3i32, 4i32, 5i32]).bit_length(), 128);
+    assert_eq!([2u32, 3u32, 4u32].bit_length(), 96);
+    assert_eq!([2i32, 3i32, 4i32, 5i32].bit_length(), 128);
 
-    assert_eq!((&[2u64, 3u64, 4u64]).bit_length(), 192);
-    assert_eq!((&[2i64, 3i64, 4i64, 5i64]).bit_length(), 256);
+    assert_eq!([2u64, 3u64, 4u64].bit_length(), 192);
+    assert_eq!([2i64, 3i64, 4i64, 5i64].bit_length(), 256);
 }
 
 #[test]
 fn test_set_bit_array() {
     let mut test_val = [0xffu8];
-    &test_val.set_bit(0, false);
+    test_val.set_bit(0, false);
     assert_eq!(test_val, [0xfeu8]);
-    &test_val.set_bit(4, false);
+    test_val.set_bit(4, false);
     assert_eq!(test_val, [0xeeu8]);
 
     let mut test_array = [0xffu8, 0x00u8, 0xffu8];
-    &test_array.set_bit(7, false);
-    &test_array.set_bit(8, true);
-    &test_array.set_bit(16, false);
+    test_array.set_bit(7, false);
+    test_array.set_bit(8, true);
+    test_array.set_bit(16, false);
 
     assert_eq!(test_array, [0x7fu8, 0x01u8, 0xfeu8]);
 }
@@ -382,13 +382,13 @@ fn test_set_bit_array() {
 #[test]
 fn test_get_bit_array() {
     let test_val = [0xefu8];
-    assert_eq!(test_val.get_bit(1), true);
-    assert_eq!(test_val.get_bit(4), false);
+    assert!(test_val.get_bit(1));
+    assert!(!test_val.get_bit(4));
 
     let test_array = [0xffu8, 0x00u8, 0xffu8];
-    assert_eq!(test_array.get_bit(7), true);
-    assert_eq!(test_array.get_bit(8), false);
-    assert_eq!(test_array.get_bit(16), true);
+    assert!(test_array.get_bit(7));
+    assert!(!test_array.get_bit(8));
+    assert!(test_array.get_bit(16));
 }
 
 #[test]
